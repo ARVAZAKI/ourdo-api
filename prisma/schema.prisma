@@ -26,8 +26,8 @@ model Campaign {
   id              Int        @id @default(autoincrement())
   name            String
   description     String
-  image           String
-  donation_target BigInt
+  image           String 
+  donation_target Int
   category        String
   status          String
   start_date      DateTime

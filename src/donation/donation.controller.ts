@@ -1,4 +1,4 @@
-import { Controller, HttpException, HttpStatus, Get, Post, Body, BadRequestException } from '@nestjs/common';
+import { Controller, HttpException, HttpStatus, Get, Post, Body, BadRequestException, Param } from '@nestjs/common';
 import { DonationService } from './donation.service';
 import { createDonationDTO } from './dto/create-campaign.dto';
 
@@ -37,6 +37,15 @@ export class DonationController {
                         message: "create donation failed",
                         error: error
                   }, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+      }
+
+      @Get(':id')
+      async getCampaignDonation(@Param('id') id: string){
+            try {
+                  return await this.service.getCampaignDonation(Number(id))
+            } catch (error) {
+                  throw error
             }
       }
 }

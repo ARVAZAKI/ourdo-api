@@ -49,4 +49,48 @@ export class DonationService {
                   })
                   return donation
       }
+
+      async getCampaignDonation(id: number){
+            try {
+                  const campaign = await this.prismaService.campaign.findUnique({
+                        where:{
+                              id: id
+                        },
+                        include: {
+                              Donation: {
+                                    select:{
+                                          amount: true,
+                                          user:{
+                                                select:{
+                                                      name: true
+                                                }
+                                          }
+                                    }
+                              }
+                             
+                        }
+                  })
+                  if(!campaign){
+                        throw new BadRequestException("Campaign not found")
+                  }
+                  const totalDonation = campaign.Donation.reduce((total, donation) => total + donation.amount, 0)
+                  return {
+                        message: "get campaign donation successfully",
+                        data: {
+                              id: campaign.id,
+                              name: campaign.name,
+                              description: campaign.description,
+                              image: campaign.image,
+                              donation_target: campaign.donation_target,
+                              totalDonation: totalDonation, 
+                              donations: campaign.Donation
+                        }
+                  }
+            } catch (error) {
+                  throw new HttpException({
+                        message: "Get campaign donation failed",
+                        error: error.message
+                    }, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+      }
 }

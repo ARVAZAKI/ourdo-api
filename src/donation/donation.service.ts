@@ -8,7 +8,20 @@ export class DonationService {
 
       async getDonations(){
             try {
-                  const donation = await this.prismaService.donation.findMany()
+                  const donation = await this.prismaService.donation.findMany({
+                        include: {
+                              campaign: {
+                                    select:{
+                                          name: true
+                                    }
+                              },
+                              user:{
+                                    select:{
+                                          name: true
+                                    }
+                              }
+                        }
+                  })
                   return donation;
             } catch (error) {
                   throw new HttpException({
